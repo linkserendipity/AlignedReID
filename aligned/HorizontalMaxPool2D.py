@@ -14,7 +14,7 @@ class HorizontalMaxPool2d(nn.Module):
 
 if __name__ == "__main__":
     import torch
-    x = torch.tensor(32,2048,8,4)
+    x = torch.Tensor(32,2048,8,4)
     hp = HorizontalMaxPool2d()
     y = hp()
     print(y.shape)
