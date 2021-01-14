@@ -1,6 +1,6 @@
 from __future__ import absolute_import
 import sys
-sys.path.append("..") #
+sys.path.append("/home/ls/AlignedReID/aligned")  #
 
 import torch
 from torch import nn
