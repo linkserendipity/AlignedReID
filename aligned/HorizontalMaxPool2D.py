@@ -1,4 +1,6 @@
 import torch.nn as nn
+import sys
+sys.path.append(".")  #
 
 class HorizontalMaxPool2d(nn.Module):
     def __init__(self):
