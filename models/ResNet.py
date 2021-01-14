@@ -6,7 +6,7 @@ from torch.nn import functional as F
 import torchvision
 
 from aligned.HorizontalMaxPool2D import HorizontalMaxPool2d
-
+from IPython import embed
 __all__ = ['ResNet50', 'ResNet101']
 
 class ResNet50(nn.Module):
@@ -17,17 +17,20 @@ class ResNet50(nn.Module):
         self.base = nn.Sequential(*list(resnet50.children())[:-2])
         self.classifier = nn.Linear(2048, num_classes)
         self.feat_dim = 2048 # feature dimension
+
         self.aligned = aligned
         self.horizon_pool = HorizontalMaxPool2d()
         if self.aligned:
+            # 3 layers: bn relu conv
             self.bn = nn.BatchNorm2d(2048)
             self.relu = nn.ReLU(inplace=True)
             self.conv1 = nn.Conv2d(2048, 128, kernel_size=1, stride=1, padding=0, bias=True)
-
+            # Conv2d(in_channels, out_channels, kernel_size, stride, padding, dilation, groups=1,bias = True)
+    
     def forward(self, x):
-
         x = self.base(x)
-        if not self.training:
+        # lf : locale feature
+        if not self.training: 
             lf = self.horizon_pool(x)
         if self.aligned and self.training:
             lf = self.bn(x)
@@ -36,12 +39,12 @@ class ResNet50(nn.Module):
             lf = self.conv1(lf)
         if self.aligned or not self.training:
             lf = lf.view(lf.size()[0:3])
-            lf = lf / torch.pow(lf,2).sum(dim=1, keepdim=True).clamp(min=1e-12).sqrt()
+            lf = lf / torch.pow(lf, 2).sum(dim=1, keepdim=True).clamp(min=1e-12).sqrt()
         x = F.avg_pool2d(x, x.size()[2:])
         f = x.view(x.size(0), -1)
-        #f = 1. * f / (torch.norm(f, 2, dim=-1, keepdim=True).expand_as(f) + 1e-12)
+        # f = 1. * f / (torch.norm(f, 2, dim=-1, keepdim=True).expand_as(f) + 1e-12)
         if not self.training:
-            return f,lf
+            return f, lf
         y = self.classifier(f)
         if self.loss == {'softmax'}:
             return y
@@ -97,3 +100,10 @@ class ResNet101(nn.Module):
             return y, f
         else:
             raise KeyError("Unsupported loss: {}".format(self.loss))
+
+
+if __name__ == "__main__":
+    model = ResNet50(num_classes=751, loss={'softmax', 'metric'}, aligned=True)
+    imgs = torch.Tensor(32, 3, 256, 128)
+    y, f, lf = model(imgs)
+    embed()
