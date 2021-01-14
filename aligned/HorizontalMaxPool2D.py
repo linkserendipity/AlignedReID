@@ -18,3 +18,4 @@ if __name__ == "__main__":
     hp = HorizontalMaxPool2d()
     y = hp(x)
     print(y.shape)
+    # torch.Size([32, 2048, 8, 1])
