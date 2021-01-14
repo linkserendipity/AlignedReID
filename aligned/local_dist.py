@@ -39,6 +39,7 @@ def shortest_dist(dist_mat):
   """
   m, n = dist_mat.size()[:2]
   # Just offering some reference for accessing intermediate distance.
+  # core algorithe
   dist = [[0 for _ in range(n)] for _ in range(m)]
   for i in range(m):
     for j in range(n):
@@ -144,9 +145,10 @@ def batch_local_dist(x, y):
   return dist
 
 if __name__ == '__main__':
-    x = torch.randn(32,2048)
-    y = torch.randn(32,2048)
-    dist_mat = euclidean_dist(x,y)
-    dist_ap, dist_an, p_inds, n_inds = hard_example_mining(dist_mat,return_inds=True)
+    x = torch.randn(32, 8, 128)
+    y = torch.randn(32, 8, 128)
+    # dist_mat = euclidean_dist(x, y)
+    # dist_ap, dist_an, p_inds, n_inds = hard_example_mining(dist_mat,return_inds=True)
+    local_dist = batch_local_dist(x, y)
     from IPython import embed
     embed()

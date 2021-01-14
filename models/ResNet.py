@@ -110,4 +110,10 @@ if __name__ == "__main__":
     model = ResNet50(num_classes=751, loss={'softmax', 'metric'}, aligned=True)
     imgs = torch.Tensor(32, 3, 256, 128)
     y, f, lf = model(imgs)
+    # y.shape=torch.Size([32, 751])
+    # f.shape=torch.Size([32, 2048])
+    # lf.shape=torch.Size([32, 128, 8])
+    # 
+
     embed()
+
