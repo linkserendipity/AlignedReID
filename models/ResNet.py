@@ -56,7 +56,7 @@ class ResNet50(nn.Module):
             if self.aligned: return  f, lf
             return f
         elif self.loss == {'softmax', 'metric'}:
-            if self.aligned: return y, f, lf
+            if self.aligned: return y, f, lf #
             return y, f
         else:
             raise KeyError("Unsupported loss: {}".format(self.loss))

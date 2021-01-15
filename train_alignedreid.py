@@ -147,7 +147,7 @@ def main():
     )
 
     print("Initializing model: {}".format(args.arch))
-    model = models.init_model(name=args.arch, num_classes=dataset.num_train_pids, loss={'softmax','metric'}, aligned =True, use_gpu=use_gpu)
+    model = models.init_model(name=args.arch, num_classes=dataset.num_train_pids, loss={'softmax','metric'}, aligned =True, use_gpu=use_gpu)  # #aligned
     print("Model size: {:.5f}M".format(sum(p.numel() for p in model.parameters())/1000000.0))
     if args.labelsmooth:
         criterion_class = CrossEntropyLabelSmooth(num_classes=dataset.num_train_pids, use_gpu=use_gpu)
@@ -229,7 +229,7 @@ def train(epoch, model, criterion_class, criterion_metric, optimizer, trainloade
 
         # measure data loading time
         data_time.update(time.time() - end)
-        outputs, features, local_features = model(imgs)
+        outputs, features, local_features = model(imgs) ##
         if args.htri_only:
             if isinstance(features, tuple):
                 global_loss, local_loss = DeepSupervision(criterion_metric, features, pids, local_features)
