@@ -156,11 +156,9 @@ class TripletLossAlignedReID(nn.Module):
         dist.addmm_(inputs, inputs.t(), beta=1, alpha=-2)
         dist = dist.clamp(min=1e-12).sqrt()  # for numerical stability
         # For each anchor, find the hardest positive and negative
-        dist_ap,dist_an,p_inds,n_inds = hard_example_mining(dist,targets,return_inds=True)
+        dist_ap, dist_an, p_inds, n_inds = hard_example_mining(dist, targets, return_inds=True)
         p_inds, n_inds = p_inds.long(), n_inds.long()
-
-        from IPython import embed
-        embed()
+        ##
 
         local_features = local_features.permute(0,2,1)
         p_local_features = local_features[p_inds]
@@ -171,7 +169,7 @@ class TripletLossAlignedReID(nn.Module):
         # Compute ranking hinge loss
         y = torch.ones_like(dist_an)
         global_loss = self.ranking_loss(dist_an, dist_ap, y)
-        local_loss = self.ranking_loss_local(local_dist_an,local_dist_ap, y)
+        local_loss = self.ranking_loss_local(local_dist_an, local_dist_ap, y)
         if self.mutual:
             return global_loss+local_loss,dist
         return global_loss,local_loss
@@ -270,8 +268,25 @@ class MetricMutualLoss(nn.Module):
 if __name__ == '__main__':
     target = [1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6, 6, 7, 7, 7, 7, 8, 8, 8, 8]
     target = torch.Tensor(target)
-    features = torch.Tensor(32, 2048)
+    features = torch.Tensor(32, 2048)  # initial ??
+    # tensor([[0.0000e+00, 0.0000e+00, 0.0000e+00,  ..., 0.0000e+00, 0.0000e+00,
+    #      0.0000e+00],
+    #     [0.0000e+00, 0.0000e+00, 0.0000e+00,  ..., 0.0000e+00, 0.0000e+00,
+    #      0.0000e+00],
+    #     [0.0000e+00, 0.0000e+00, 0.0000e+00,  ..., 4.5555e-41, 1.4013e-45,
+    #      0.0000e+00],
+    #     ...,
+    #     [0.0000e+00, 0.0000e+00, 0.0000e+00,  ..., 0.0000e+00, 0.0000e+00,
+    #      0.0000e+00],
+    #     [0.0000e+00, 0.0000e+00, 0.0000e+00,  ..., 0.0000e+00, 0.0000e+00,
+    #      0.0000e+00],
+    #     [0.0000e+00, 0.0000e+00, 0.0000e+00,  ..., 0.0000e+00, 0.0000e+00,
+    #      0.0000e+00]])
+
     local_features = torch.randn(32, 128, 8)
     a = TripletLoss()
     b = TripletLossAlignedReID()
     gl, local = b(features, target, local_features)
+    
+    from IPython import embed
+    embed()
