@@ -1,0 +1,1 @@
+CUDA_VISIBLE_DEVICES=0 nohup python train_alignedreid.py --train_batch=32  --max_epoch=60 &
