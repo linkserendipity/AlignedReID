@@ -157,6 +157,7 @@ class TripletLossAlignedReID(nn.Module):
         dist = dist.clamp(min=1e-12).sqrt()  # for numerical stability
         # For each anchor, find the hardest positive and negative
         dist_ap,dist_an,p_inds,n_inds = hard_example_mining(dist,targets,return_inds=True)
+        
         local_features = local_features.permute(0,2,1)
         p_local_features = local_features[p_inds]
         n_local_features = local_features[n_inds]
