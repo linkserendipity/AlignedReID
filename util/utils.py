@@ -7,7 +7,7 @@ import json
 import os.path as osp
 from PIL import Image
 import matplotlib.pyplot as plt
-import cv2
+# import cv2
 import numpy as np
 from numpy import array,argmin
 
@@ -156,58 +156,59 @@ def feat_flatten(feat):
     shp = feat.shape
     feat = feat.reshape(shp[0] * shp[1], shp[2])
     return feat
+############## cv2 how to install?
 
-def show_similar(local_img_path, img_path, similarity, bbox):
-    img1 = cv2.imread(local_img_path)
-    img2 = cv2.imread(img_path)
-    img1 = cv2.cvtColor(img1, cv2.COLOR_BGR2RGB)
-    img2 = cv2.cvtColor(img2, cv2.COLOR_BGR2RGB)
-    img1 = cv2.resize(img1, (64, 128))
-    img2 = cv2.resize(img2, (64, 128))
-    cv2.rectangle(img1, (bbox[0], bbox[1]), (bbox[0] + bbox[2], bbox[1] + bbox[3]), (0, 255, 0), 1)
+# def show_similar(local_img_path, img_path, similarity, bbox):
+#     img1 = cv2.imread(local_img_path)
+#     img2 = cv2.imread(img_path)
+#     img1 = cv2.cvtColor(img1, cv2.COLOR_BGR2RGB)
+#     img2 = cv2.cvtColor(img2, cv2.COLOR_BGR2RGB)
+#     img1 = cv2.resize(img1, (64, 128))
+#     img2 = cv2.resize(img2, (64, 128))
+#     cv2.rectangle(img1, (bbox[0], bbox[1]), (bbox[0] + bbox[2], bbox[1] + bbox[3]), (0, 255, 0), 1)
 
-    p = np.where(similarity == np.max(similarity))
-    y, x = p[0][0], p[1][0]
-    cv2.rectangle(img2, (x - bbox[2] / 2, y - bbox[3] / 2), (x + bbox[2] / 2, y + bbox[3] / 2), (0, 255, 0), 1)
-    plt.subplot(1, 3, 1).set_title('patch')
-    plt.imshow(img1)
-    plt.subplot(1, 3, 2).set_title(('max similarity: ' + str(np.max(similarity))))
-    plt.imshow(img2)
-    plt.subplot(1, 3, 3).set_title('similarity')
-    plt.imshow(similarity)
+#     p = np.where(similarity == np.max(similarity))
+#     y, x = p[0][0], p[1][0]
+#     cv2.rectangle(img2, (x - bbox[2] / 2, y - bbox[3] / 2), (x + bbox[2] / 2, y + bbox[3] / 2), (0, 255, 0), 1)
+#     plt.subplot(1, 3, 1).set_title('patch')
+#     plt.imshow(img1)
+#     plt.subplot(1, 3, 2).set_title(('max similarity: ' + str(np.max(similarity))))
+#     plt.imshow(img2)
+#     plt.subplot(1, 3, 3).set_title('similarity')
+#     plt.imshow(similarity)
 
-def show_alignedreid(local_img_path, img_path, dist):
-    def drow_line(img, similarity):
-        for i in range(1, len(similarity)):
-            cv2.line(img, (0, i*16), (63, i*16), color=(0,255,0))
-            cv2.line(img, (96, i*16), (160, i*16), color=(0,255,0))
-    def drow_path(img, path):
-        for i in range(len(path[0])):
-            cv2.line(img, (64, 8+16*path[0][i]), (96,8+16*path[1][i]), color=(255,255,0))
-    img1 = cv2.imread(local_img_path)
-    img2 = cv2.imread(img_path)
-    img1 = cv2.cvtColor(img1, cv2.COLOR_BGR2RGB)
-    img2 = cv2.cvtColor(img2, cv2.COLOR_BGR2RGB)
-    img1 = cv2.resize(img1, (64,128))
-    img2 = cv2.resize(img2, (64,128))
-    img = np.zeros((128,160,3)).astype(img1.dtype)
-    img[:,:64,:] = img1
-    img[:,-64:,:] = img2
-    drow_line(img, dist)
-    d,D,sp = dtw(dist)
-    origin_dist = np.mean(np.diag(dist))
-    drow_path(img, sp)
-    plt.subplot(1,2,1).set_title('Aligned distance: %.4f \n Original distance: %.4f' %(d,origin_dist))
-    plt.subplot(1,2,1).set_xlabel('Aligned Result')
-    plt.imshow(img)
-    plt.subplot(1,2,2).set_title('Distance Map')
-    plt.subplot(1,2,2).set_xlabel('Right Image')
-    plt.subplot(1,2,2).set_ylabel('Left Image')
-    plt.imshow(dist)
-    plt.subplots_adjust(bottom=0.1, left=0.075, right=0.85, top=0.9)
-    cax = plt.axes([0.9, 0.25, 0.025, 0.5])
-    plt.colorbar(cax = cax)
-    plt.show()
+# def show_alignedreid(local_img_path, img_path, dist):
+#     def drow_line(img, similarity):
+#         for i in range(1, len(similarity)):
+#             cv2.line(img, (0, i*16), (63, i*16), color=(0,255,0))
+#             cv2.line(img, (96, i*16), (160, i*16), color=(0,255,0))
+#     def drow_path(img, path):
+#         for i in range(len(path[0])):
+#             cv2.line(img, (64, 8+16*path[0][i]), (96,8+16*path[1][i]), color=(255,255,0))
+#     img1 = cv2.imread(local_img_path)
+#     img2 = cv2.imread(img_path)
+#     img1 = cv2.cvtColor(img1, cv2.COLOR_BGR2RGB)
+#     img2 = cv2.cvtColor(img2, cv2.COLOR_BGR2RGB)
+#     img1 = cv2.resize(img1, (64,128))
+#     img2 = cv2.resize(img2, (64,128))
+#     img = np.zeros((128,160,3)).astype(img1.dtype)
+#     img[:,:64,:] = img1
+#     img[:,-64:,:] = img2
+#     drow_line(img, dist)
+#     d,D,sp = dtw(dist)
+#     origin_dist = np.mean(np.diag(dist))
+#     drow_path(img, sp)
+#     plt.subplot(1,2,1).set_title('Aligned distance: %.4f \n Original distance: %.4f' %(d,origin_dist))
+#     plt.subplot(1,2,1).set_xlabel('Aligned Result')
+#     plt.imshow(img)
+#     plt.subplot(1,2,2).set_title('Distance Map')
+#     plt.subplot(1,2,2).set_xlabel('Right Image')
+#     plt.subplot(1,2,2).set_ylabel('Left Image')
+#     plt.imshow(dist)
+#     plt.subplots_adjust(bottom=0.1, left=0.075, right=0.85, top=0.9)
+#     cax = plt.axes([0.9, 0.25, 0.025, 0.5])
+#     plt.colorbar(cax = cax)
+#     plt.show()
 
 def merge_feature(feature_list, shp, sample_rate = None):
     def pre_process(torch_feature_map):
