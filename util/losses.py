@@ -159,7 +159,8 @@ class TripletLossAlignedReID(nn.Module):
         dist_ap,dist_an,p_inds,n_inds = hard_example_mining(dist,targets,return_inds=True)
         p_inds, n_inds = p_inds.long(), n_inds.long()
 
-
+        from IPython import embed
+        embed()
 
         local_features = local_features.permute(0,2,1)
         p_local_features = local_features[p_inds]
@@ -205,7 +206,7 @@ class CenterLoss(nn.Module):
         batch_size = x.size(0)
         distmat = torch.pow(x, 2).sum(dim=1, keepdim=True).expand(batch_size, self.num_classes) + \
                   torch.pow(self.centers, 2).sum(dim=1, keepdim=True).expand(self.num_classes, batch_size).t()
-        distmat.addmm_(1, -2, x, self.centers.t())
+        distmat.addmm_(x, self.centers.t(), beta=1, alpha=-2)
 
         classes = torch.arange(self.num_classes).long()
         if self.use_gpu: classes = classes.cuda()
@@ -274,5 +275,3 @@ if __name__ == '__main__':
     a = TripletLoss()
     b = TripletLossAlignedReID()
     gl, local = b(features, target, local_features)
-    from IPython import embed
-    embed()
