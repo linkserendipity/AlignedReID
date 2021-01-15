@@ -142,6 +142,9 @@ def batch_local_dist(x, y):
   dist_mat = (torch.exp(dist_mat) - 1.) / (torch.exp(dist_mat) + 1.)
   # shape [N]
   dist = shortest_dist(dist_mat.permute(1, 2, 0))
+  # .permute!!!!!!!!!!!!!!!
+  # N m n convert to   m n N
+
   return dist
 
 if __name__ == '__main__':
@@ -150,5 +153,9 @@ if __name__ == '__main__':
     # dist_mat = euclidean_dist(x, y)
     # dist_ap, dist_an, p_inds, n_inds = hard_example_mining(dist_mat,return_inds=True)
     local_dist = batch_local_dist(x, y)
+    
+    # local_dist.shape
+    # Out: torch.Size([32])
+ 
     from IPython import embed
     embed()

@@ -1,4 +1,9 @@
 from __future__ import absolute_import
+import sys
+sys.path.append("/home/ls/AlignedReID/aligned")  #
+sys.path.append(".")
+sys.path.append("..")
+
 from aligned.local_dist import *
 
 import torch
@@ -102,7 +107,7 @@ class TripletLoss(nn.Module):
         # Compute pairwise distance, replace by the official when merged
         dist = torch.pow(inputs, 2).sum(dim=1, keepdim=True).expand(n, n)
         dist = dist + dist.t()
-        dist.addmm_(1, -2, inputs, inputs.t())
+        dist.addmm_(inputs, inputs.t(), beta=1, alpha=-2)
         dist = dist.clamp(min=1e-12).sqrt()  # for numerical stability
         # For each anchor, find the hardest positive and negative
         mask = targets.expand(n, n).eq(targets.expand(n, n).t())
@@ -148,7 +153,7 @@ class TripletLossAlignedReID(nn.Module):
         # Compute pairwise distance, replace by the official when merged
         dist = torch.pow(inputs, 2).sum(dim=1, keepdim=True).expand(n, n)
         dist = dist + dist.t()
-        dist.addmm_(1, -2, inputs, inputs.t())
+        dist.addmm_(inputs, inputs.t(), beta=1, alpha=-2)
         dist = dist.clamp(min=1e-12).sqrt()  # for numerical stability
         # For each anchor, find the hardest positive and negative
         dist_ap,dist_an,p_inds,n_inds = hard_example_mining(dist,targets,return_inds=True)
@@ -258,4 +263,12 @@ class MetricMutualLoss(nn.Module):
 
 
 if __name__ == '__main__':
-    pass
+    target = [1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6, 6, 7, 7, 7, 7, 8, 8, 8, 8]
+    target = torch.Tensor(target)
+    features = torch.Tensor(32, 2048)
+    local_features = torch.randn(32, 128, 8)
+    a = TripletLoss()
+    b = TripletLossAlignedReID()
+    gl, local = b(features, target, local_features)
+    from IPython import embed
+    embed()
