@@ -1,5 +1,8 @@
 from __future__ import absolute_import
 import sys
+import sys
+sys.path.append("/home/ls/AlignedReID/util")  #
+
 import time
 import datetime
 import argparse
@@ -27,7 +30,7 @@ from IPython import embed
 
 parser = argparse.ArgumentParser(description='Train AlignedReID with cross entropy loss and triplet hard loss')
 # Datasets
-parser.add_argument('--root', type=str, default='data', help="root path to data directory")
+parser.add_argument('--root', type=str, default='/home/ls', help="root path to data directory")
 parser.add_argument('-d', '--dataset', type=str, default='market1501',
                     choices=data_manager.get_names())
 parser.add_argument('-j', '--workers', default=4, type=int,
