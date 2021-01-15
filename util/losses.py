@@ -158,8 +158,7 @@ class TripletLossAlignedReID(nn.Module):
         # For each anchor, find the hardest positive and negative
         dist_ap,dist_an,p_inds,n_inds = hard_example_mining(dist,targets,return_inds=True)
         p_inds, n_inds = p_inds.long(), n_inds.long()
-        from IPython import embed
-        embed()
+
 
 
         local_features = local_features.permute(0,2,1)
@@ -275,3 +274,5 @@ if __name__ == '__main__':
     a = TripletLoss()
     b = TripletLossAlignedReID()
     gl, local = b(features, target, local_features)
+    from IPython import embed
+    embed()
