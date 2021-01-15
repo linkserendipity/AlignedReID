@@ -1,6 +1,6 @@
 from __future__ import absolute_import
 import sys
-import sys
+import os
 sys.path.append("/home/ls/AlignedReID/util")  #
 
 import time
