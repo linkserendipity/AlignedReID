@@ -50,7 +50,7 @@ parser.add_argument('--use-metric-cuhk03', action='store_true',
 # Optimization options
 parser.add_argument('--labelsmooth', action='store_true', help="label smooth")
 parser.add_argument('--optim', type=str, default='adam', help="optimization algorithm (see optimizers.py)")
-parser.add_argument('--max-epoch', default=300, type=int,
+parser.add_argument('--max-epoch', default=60, type=int,
                     help="maximum epochs to run")
 parser.add_argument('--start-epoch', default=0, type=int,
                     help="manual epoch number (useful on restarts)")
